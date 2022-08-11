@@ -1,6 +1,2 @@
-# Driver-Friendliness-Forecast
-A graph-convolution-based method to predict driver-friendliness.
-
-# Usage
-
-python3 main.py --config config/small1/my.json
+# Driver-Friendliness-Driven-Framework
+A Novel Driver-Friendliness Driven Framework for Navigation Systems Using Graph Convolutional Networks
