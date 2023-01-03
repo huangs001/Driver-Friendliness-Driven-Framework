@@ -1,7 +1,10 @@
 # Requirements
 Python >= 3.7
+
 mxnet-cu100
+
 pytest
+
 graphviz
 
 # Usage
