@@ -4,6 +4,7 @@
 #include <set>
 #include <sstream>
 #include <tuple>
+#include <cmath>
 #include "DataLine.h"
 #include "DataParser.h"
 #include "SliceMultiThread.h"

@@ -12,6 +12,7 @@
 #include "TrajClassify.h"
 #include "AdjGraphFilter.h"
 #include "RoadLength.h"
+#include "args.hxx"
 
 
 void testCalc()
@@ -231,9 +232,50 @@ void env(ConfigVal config) {
 	getPlainData(config);
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+	args::ArgumentParser parser("HT data processing", "");
+	args::HelpFlag help(parser, "help", "display this help menu", { 'h', "help" });
+	args::ValueFlag<std::string> arg1(parser, "csv_folder", "csv_file", { "csv" });
+	args::ValueFlag<std::string> arg2(parser, "osmid_folder", "osmid_folder", { "osmid" });
+	args::ValueFlag<std::string> arg3(parser, "osmDataPath", "osmDataPath", { "osmdata" });
+	args::ValueFlag<std::string> arg4(parser, "partEdgePath", "partEdgePath", { "part_edge" });
+	args::ValueFlag<std::string> arg5(parser, "partNodePath", "partNodePath", { "part_node" });
+	args::ValueFlag<std::string> arg6(parser, "partIdPath", "partIdPath", { "part_path" });
+
+	if (argc <= 1) {
+		std::cerr << parser;
+		return 0;
+	}
+
+	try {
+		parser.ParseCLI(argc, argv);
+	}
+	catch (const args::Help&) {
+		std::cerr << parser;
+		return 0;
+	}
+	catch (const args::ParseError& e) {
+		std::cerr << e.what() << std::endl;
+		std::cerr << parser;
+		return 1;
+	}
+
+	auto arg1_val = args::get(arg1);
+	auto arg2_val = args::get(arg2);
+	auto arg3_val = args::get(arg3);
+	auto arg4_val = args::get(arg4);
+	auto arg5_val = args::get(arg5);
+	auto arg6_val = args::get(arg6);
+
 	ConfigVal config1 = ConfigVal::getConfigSmall1();
+
+	config1.csv_folder = arg1_val;
+	config1.osmid_folder = arg2_val;
+	config1.osmDataPath = arg3_val;
+	config1.smallEdgePath = arg4_val;
+	config1.smallNodePath = arg5_val;
+	config1.smallIdPath = arg6_val;
 
 	generateData(config1);
 	trjCls(config1);

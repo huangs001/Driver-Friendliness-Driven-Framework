@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <fstream>
+#include <vector>
 
 class DataSaveLoad
 {

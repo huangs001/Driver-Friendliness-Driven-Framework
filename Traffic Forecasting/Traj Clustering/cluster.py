@@ -342,7 +342,8 @@ def vecClusterAnalysis(args):
     sum = [0, 0, 0]
     print(3)
 
-    osmid_dir = r"./T-drive Taxi Trajectories/release/output_osmid"     # Need other pretretment
+    #osmid_dir = r"./T-drive Taxi Trajectories/release/output_osmid"     # Need other pretretment
+    osmid_dir = args.osmid_dir
     osmid_dict = dict()
 
     id_list = []
@@ -422,7 +423,6 @@ def vecClusterAnalysis(args):
     add_all = sum[0] + sum[1] + sum[2]
     avg = add_all / 3
     print(avg)
-    # hd, dd, wd = [1 + ((i - 1.7 * avg) / avg * 0.35) for i in sum]
     hd, dd, wd = [1 + (i / add_all) for i in sum]
     print(hd)
     print(dd)
@@ -441,11 +441,13 @@ def check_args(args):
 
 
 def main(args):
-    parser = argparse.ArgumentParser(description='Cluster')
+    parser = argparse.ArgumentParser(description='Trajectory clustering for DFNav')
     parser.add_argument('--traj', required=True, metavar='FOLDER',
                         help='Trajectories folder')
     parser.add_argument('--limit', type=int, required=False, metavar='SIZE', default=300,
                         help='Top K')
+    parser.add_argument('--osmid_dir', required=True, metavar='FOLDER',
+                        help='Osmid directory')
     parser.add_argument('--out', required=True, metavar='FOLDER',
                         help='Output value folder')
 
