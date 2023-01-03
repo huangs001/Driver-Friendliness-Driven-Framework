@@ -15,5 +15,7 @@ python3 cluster.py --traj /path/to/trajectory --traj_mapping /path/to/trajectory
 
 ## Mandatory
 `--traj`, trajectory data
+
 `--traj_mapping`, mapping between trajectory and road
+
 `--output`, output folder
