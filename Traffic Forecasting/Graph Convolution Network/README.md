@@ -9,9 +9,17 @@ graphviz
 
 # Usage
 ## Quick Start
+### Train
 ```
-python3 main.py --config /path/to/config
+python3 train.py --config /path/to/config --save
+```
+
+### Predict
+```
+python3 predict.py --config /path/to/config --output predict
 ```
 
 ## Mandatory
-`--config`, the configure file for running model
+`--config`, configure file for running model
+
+`--output`, result name for prediction
