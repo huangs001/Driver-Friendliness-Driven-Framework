@@ -1,0 +1,27 @@
+{
+    "module_type": "individual",
+    "act_type": "relu",
+    "temporal_emb": true,
+    "spatial_emb": true,
+    "use_mask": true,
+    "first_layer_embedding_size": 64,
+    "filters": [
+        [64,64,64],
+        [64,64,64],
+        [64,64,64]
+    ],
+    "batch_size": 32,
+    "learning_rate": 0.01,
+    "optimizer": "adam",
+    "epochs": 200,
+    "max_update_factor": 1,
+    "ctx": 0,
+    "adj_filename": "./adj.csv",
+    "id_filename": "./adj_id.txt",
+    "graph_signal_matrix_filename": "./adj.npz",
+    "num_of_vertices": 150,
+    "points_per_hour": 4,
+    "num_for_predict": 4,
+    "num_of_features": 1,
+    "time_step_filename": "./adj.txt"
+}

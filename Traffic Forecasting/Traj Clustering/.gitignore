@@ -148,3 +148,5 @@ cython_debug/
 
 simulated_data/
 true_data/
+
+.vs

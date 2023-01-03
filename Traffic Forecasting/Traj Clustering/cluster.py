@@ -315,7 +315,7 @@ def split_time_series(ts):
     return zip(tss, start_idx, how_much)
 
 def vecClusterAnalysis(args):
-    out_folder = args.out
+    out_folder = args.output
     trVecs = []
     trs = cPickle.load(open('./true_data/true_traj_vec_normal_reverse', 'rb'))
     inte = []
@@ -343,7 +343,7 @@ def vecClusterAnalysis(args):
     print(3)
 
     #osmid_dir = r"./T-drive Taxi Trajectories/release/output_osmid"     # Need other pretretment
-    osmid_dir = args.osmid_dir
+    osmid_dir = args.traj_mapping
     osmid_dict = dict()
 
     id_list = []
@@ -435,8 +435,8 @@ def vecClusterAnalysis(args):
 def check_args(args):
     if not os.path.isdir('./true_data'):
         os.makedirs('./true_data')
-    if not os.path.isdir(args.out):
-        os.makedirs(args.out)
+    if not os.path.isdir(args.output):
+        os.makedirs(args.output)
     return True
 
 
@@ -446,9 +446,9 @@ def main(args):
                         help='Trajectories folder')
     parser.add_argument('--limit', type=int, required=False, metavar='SIZE', default=300,
                         help='Top K')
-    parser.add_argument('--osmid_dir', required=True, metavar='FOLDER',
+    parser.add_argument('--traj_mapping', required=True, metavar='FOLDER',
                         help='Osmid directory')
-    parser.add_argument('--out', required=True, metavar='FOLDER',
+    parser.add_argument('--output', required=True, metavar='FOLDER',
                         help='Output value folder')
 
     args = parser.parse_args(args)

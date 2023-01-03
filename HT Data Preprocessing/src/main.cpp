@@ -236,12 +236,12 @@ int main(int argc, char *argv[])
 {
 	args::ArgumentParser parser("HT data processing", "");
 	args::HelpFlag help(parser, "help", "display this help menu", { 'h', "help" });
-	args::ValueFlag<std::string> arg1(parser, "csv_folder", "csv_file", { "csv" });
-	args::ValueFlag<std::string> arg2(parser, "osmid_folder", "osmid_folder", { "osmid" });
-	args::ValueFlag<std::string> arg3(parser, "osmDataPath", "osmDataPath", { "osmdata" });
-	args::ValueFlag<std::string> arg4(parser, "partEdgePath", "partEdgePath", { "part_edge" });
-	args::ValueFlag<std::string> arg5(parser, "partNodePath", "partNodePath", { "part_node" });
-	args::ValueFlag<std::string> arg6(parser, "partIdPath", "partIdPath", { "part_path" });
+	args::ValueFlag<std::string> arg1(parser, "traj_data", "The trajectory data", { "traj_data" });
+	args::ValueFlag<std::string> arg2(parser, "traj_match", "The data that trajectory mapping to roads", { "traj_match" });
+	args::ValueFlag<std::string> arg3(parser, "road_data", "The road data", { "road_data" });
+	args::ValueFlag<std::string> arg4(parser, "edge_adj", "The edge adjacency matrix of the map", { "edge_adj" });
+	args::ValueFlag<std::string> arg5(parser, "node_adj", "The node adjacency matrix of the map", { "node_adj" });
+	args::ValueFlag<std::string> arg6(parser, "output", "The output folder", { "node_adj" });
 
 	if (argc <= 1) {
 		std::cerr << parser;
@@ -275,7 +275,8 @@ int main(int argc, char *argv[])
 	config1.osmDataPath = arg3_val;
 	config1.smallEdgePath = arg4_val;
 	config1.smallNodePath = arg5_val;
-	config1.smallIdPath = arg6_val;
+
+	config1.setOut(arg6_val);
 
 	generateData(config1);
 	trjCls(config1);

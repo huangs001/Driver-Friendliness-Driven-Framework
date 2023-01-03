@@ -59,9 +59,9 @@ std::unordered_map<unsigned, Road_type> load_weight(const std::string &path) {
 int main(int argc, char* argv[]) {
 	args::ArgumentParser parser("cch kernal friendly routing demo", "");
     args::HelpFlag help(parser, "help", "display this help menu", {'h', "help"});
-    args::ValueFlag<std::string> weightArgs(parser, "path", "weight graph file", {'w'});
-    args::ValueFlag<unsigned> oArgs(parser, "origin", "origin point", {'o'});
-    args::ValueFlag<unsigned> dArgs(parser, "dest", "destination point", {'d'});
+    args::ValueFlag<std::string> weightArgs(parser, "graph_path", "graph path", {"graph_path"});
+	args::ValueFlag<std::string> outArgs(parser, "output", "routing path", {"output"});
+	args::PositionalList<unsigned> odArgs(parser, "od", "od lists [o1, d1, o2, d2, ...]");
 
     if (argc <= 1) {
         std::cerr << parser;
@@ -81,8 +81,8 @@ int main(int argc, char* argv[]) {
 	
 
 	auto weight_path = args::get(weightArgs);
-	auto from = args::get(oArgs);
-	auto to = args::get(dArgs);
+	auto od = args::get(odArgs);
+	auto out = args::get(outArgs);
 
 	auto mysuper_weight = load_weight(weight_path);
 
@@ -97,7 +97,6 @@ int main(int argc, char* argv[]) {
 		id_set.insert(ww.second.v);
 	}
 	std::cout << id_set.size() << std::endl;
-	//return 0;
 
 	int idx = 0;
 	for (auto &wwi : id_set) {
@@ -139,16 +138,31 @@ int main(int argc, char* argv[]) {
 	metric.customize();
 	RoutingKit::CustomizableContractionHierarchyQuery cch_query(metric);
 
-	cch_query.reset().add_source(from).add_target(to).run();
+	std::ofstream ofs(out);
 
-	auto d2 = cch_query.get_distance();
-	auto path2 = cch_query.get_node_path();
+	unsigned helper = 0;
+	unsigned from = 0, to = 0;
+	for (const auto point: od) {
+		if (helper++ % 2 == 0) {
+			from = point;
+			continue;
+		}
+		to = point;
 
-	std::cout << "To get from "<< from << " to "<< to << " one needs " << d2.length << " milliseconds." << std::endl;
-	std::cout << "The path is";
-	for(auto x:path2)
-		std::cout << " " << x;
-	std::cout << std::endl;
+		cch_query.reset().add_source(from).add_target(to).run();
+
+		auto d2 = cch_query.get_distance();
+		auto path2 = cch_query.get_node_path();
+
+		//std::cout << "To get from "<< from << " to "<< to << " one needs " << d2.length << " milliseconds." << std::endl;
+		std::cout << "The path is";
+		for(auto x:path2) {
+			std::cout << " " << x;
+			ofs << x << " ";
+		}
+		std::cout << std::endl;
+		ofs << std::endl;
+	}
 
     return 0;
 }
