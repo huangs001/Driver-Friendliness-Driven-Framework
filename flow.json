@@ -6,12 +6,14 @@
     "use_mask": true,
     "first_layer_embedding_size": 64,
     "filters": [
+        [64,64,64],
+        [64,64,64],
         [64,64,64]
     ],
     "batch_size": 32,
     "learning_rate": 0.01,
     "optimizer": "adam",
-    "epochs": 50,
+    "epochs": 200,
     "max_update_factor": 1,
     "ctx": 0,
     "adj_filename": "./data/small1/flow/flow.csv",
