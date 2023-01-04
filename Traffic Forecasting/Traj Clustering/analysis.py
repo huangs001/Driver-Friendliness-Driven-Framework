@@ -53,7 +53,7 @@ def vecClusterAnalysis():
     sum = [0, 0, 0]
     print(3)
 
-    osmid_dir = r"D:\BaiduNetdiskDownload\T-drive Taxi Trajectories\release\output_osmid"
+    osmid_dir = r""
     osmid_dict = dict()
 
     id_list = []

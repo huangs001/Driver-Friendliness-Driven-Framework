@@ -8,7 +8,84 @@ import time
 import datetime
 import pandas as pd
 import csv
-import os
+import osmnx as ox
+import re
+
+def generate_adj(path, node2edge_out, edge_out, edge2edge_out):
+    G_BJ = ox.graph_from_xml('../pythonProject/osm/Bj.osm')
+
+    G = ox.graph_from_xml(path)
+    # A = nx.adjacency_data(G)
+
+    nodes_adj = dict()
+    edge2edge_adj = dict()
+
+    def add_node(node, edge):
+        if node not in nodes_adj:
+            nodes_adj[node] = set()
+        nodes_adj[node].add(edge)
+
+    bad_cnt = 0
+    for key, val in G.edges.items():
+        u, v, _ = key
+        if key not in G_BJ.edges:
+            bad_cnt += 1
+            continue
+        osmid = G_BJ.edges[key]['osmid']
+        if isinstance(osmid, list):
+            osmid = osmid[0]
+        add_node(u, osmid)
+        add_node(v, osmid)
+    print(bad_cnt)
+
+    for key, val in G.edges.items():
+        u, v, _ = key
+        if key not in G_BJ.edges:
+            continue
+        osmid = G_BJ.edges[key]['osmid']
+        if isinstance(osmid, list):
+            osmid = osmid[0]
+        ll = set()
+
+        ll.update([edge for edge in nodes_adj[u] if edge != osmid])
+        ll.update([edge for edge in nodes_adj[v] if edge != osmid])
+
+        edge2edge_adj[osmid] = list(ll)
+
+    with open(node2edge_out, 'w') as f:
+        for node, adj in nodes_adj.items():
+            print(node, file=f)
+            print(' '.join({str(idd) for idd in adj}), file=f)
+
+    with open(edge2edge_out, 'w') as f:
+        for edge, adj in edge2edge_adj.items():
+            print(edge, file=f)
+            print(' '.join({str(idd) for idd in adj}), file=f)
+
+    with open(edge_out, 'w') as f:
+        for key, val in G.edges.items():
+            u, v, _ = key
+            if key not in G_BJ.edges:
+                continue
+            osmid = G_BJ.edges[key]['osmid']
+            if isinstance(osmid, list):
+                osmid = osmid[0]
+            print(osmid, file=f)
+            print(' '.join([str(u), str(v)]), file=f)
+
+def output_id(path, main_graph, outpath):
+    G1 = ox.graph_from_xml(path)
+    G_BJ = main_graph
+    # print(len(G1.edges))
+    # ox.plot_graph(G1)
+    # plt.show()
+
+    with open(outpath, 'w') as f:
+        for k, v in G1.edges.items():
+            if k not in G_BJ.edges:
+                continue
+            osmid = G_BJ.edges[k]['osmid']
+            print(osmid if not isinstance(osmid, list) else osmid[0], file=f)
 
 def convert(input_ts, input_adj, input_tadj, input_tadj2, input_cnt, output_ts, output_ts_2, output_ts_3, output_df, output_adj, output_adj2, output_adj3, output_id):
     origin_ts = list()
@@ -155,11 +232,42 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--traj", type=str, help='trajectory data')
     parser.add_argument("--match", type=str, required=True, help="trajectory matching")
-    parser.add_argument("--road", type=str, required=True, help="road data")
-    parser.add_argument("--edge_adj", type=str, required=True, help="edge adjacency matrix")
-    parser.add_argument("--node_adj", type=str, required=True, help="node adjacency matrix")
+    parser.add_argument("--osm", type=str, required=True, help="openstreetmap data")
     
     args = parser.parse_args()
+
+    road_path = './road.txt'
+    match_folder = args.match
+    file_list = os.listdir(match_folder)
+    pattern = re.compile('<.*>')
+    road_length = {}
+    os.makedirs('./traj_osmid', exist_ok=True)
+    for file in file_list:
+        with open(os.path.join(match_folder, file)) as f, open(f'./traj_osmid/{file}', 'w') as f2:
+            for l in f:
+                l = pattern.sub('\"\"', l)
+                data = eval(l)
+                osmid = data['osmid']
+
+                if not isinstance(data['osmid'], list):
+                    osmid = [osmid]
+                f2.write(f'{osmid[0]}\n')
+                for oid in osmid:
+                    road_length[oid] = (data['length'], data['maxspeed'])
+
+    with open(os.path.join(road_path), 'w') as f:
+        for d in road_length.items():
+            print('{},{},{}'.format(d[0], d[1][0], d[1][1]), file=f)
+
+    print("Done")
+
+    print("Generating adj...")
+    main_graph = args.osm
+    generate_adj(main_graph, main_graph,
+                    os.path.join('node.txt'),
+                    os.path.join('edge.txt'),
+                    os.path.join('edge2edge.txt'))
+    print("Done")
 
     os.makedirs('./output/small1/acc', exist_ok=True)
     os.makedirs('./output/small1/flow', exist_ok=True)
@@ -167,11 +275,11 @@ if __name__ == '__main__':
     os.makedirs('./output/small1/trjCls', exist_ok=True)
     os.makedirs('./output/small1/filter', exist_ok=True)
 
-    subprocess.run(['./HT Data Preprocessing/build/HT_process', '--traj_data', args.traj, '--traj_match', args.match,
-                    '--road_data', args.road, '--edge_adj', args.edge_adj, '--node_adj', args.node_adj, '--output', './output'])
+    subprocess.run(['./HT Data Preprocessing/build/HT_process', '--traj_data', args.traj, '--traj_match', './traj_osmid',
+                    '--road_data', road_path, '--edge_adj', 'edge.txt', '--node_adj', 'node.txt', '--output', './output'])
 
     cluster = importlib.import_module('Traffic Forecasting.Traj Clustering.cluster')
-    cluster.main(['--traj', args.traj, '--traj_mapping', args.traj_match, '--output', './traj_result'])
+    cluster.main(['--traj', args.traj, '--traj_mapping', './traj_osmid', '--output', './traj_result'])
 
     convert_i('./output', './traj_result', './data', 1)
 
