@@ -285,6 +285,10 @@ if __name__ == '__main__':
 
     trains = ['passtime', 'flow', 'acc']
 
+    from sys import path as pylib #im naming it as pylib so that we won't get confused between os.path and sys.path 
+    import os
+    pylib += [os.path.join(os.path.abspath(os.path.dirname(os.path.realpath(__file__))), './Traffic Forecasting/Graph Convolution Network')]
+
     gcn = importlib.import_module('Traffic Forecasting.Graph Convolution Network.train')
 
     for t in trains:

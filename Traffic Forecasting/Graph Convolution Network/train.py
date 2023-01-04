@@ -1,4 +1,6 @@
 # -*- coding:utf-8 -*-
+from utils import (construct_model, generate_data,
+                   masked_mae_np, masked_mape_np, masked_mse_np)
 
 import time
 import json
@@ -7,8 +9,6 @@ import argparse
 import numpy as np
 import mxnet as mx
 
-from utils import (construct_model, generate_data,
-                   masked_mae_np, masked_mape_np, masked_mse_np)
 
 def run(args):
     parser = argparse.ArgumentParser()
