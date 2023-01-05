@@ -131,13 +131,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     trains = ['passtime', 'flow', 'acc']
-    data = dict()
 
     gcn = importlib.import_module('Traffic Forecasting.Graph Convolution Network.predict')
 
     for t in trains:
         gcn.run(['--config', f'./{t}.json', '--output', t])
-        data[t] = np.load(f'./{t}.npy')
+        data = np.load(f'./{t}.npy')
+        #data = np.random.randint(0, 10, (1, 4, 150))
 
         with open(f'./output/small1/{t}/data.txt') as f1, open(f'./output/small1/{t}/data2.txt') as f2, open(f'./{t}001.txt', 'w') as f3:
             id_list = list()
@@ -154,6 +154,8 @@ if __name__ == '__main__':
                     if int(buf_line.strip()) in id_list:
                         jdx = id_list.index(int(buf_line.strip()))
                         f3.write(f'{int(10 * data[0][0][jdx])}\n')
+                    else:
+                        f3.write(f'{10 * int(line.split()[0])}\n')
     
     osm = './tmp_map.osm'
     G_P = ox.graph_from_xml(osm)
