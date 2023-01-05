@@ -135,7 +135,7 @@ if __name__ == '__main__':
     gcn = importlib.import_module('Traffic Forecasting.Graph Convolution Network.predict')
 
     for t in trains:
-        gcn.run(['--config', f'./{t}.json', '--output', t])
+        gcn.run(['--config', f'./config/{t}.json', '--output', t])
         data = np.load(f'./{t}.npy')
         #data = np.random.randint(0, 10, (1, 4, 150))
 
