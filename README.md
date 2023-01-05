@@ -10,6 +10,8 @@ mxnet-cu100
 
 Tensorflow = 1.15.1
 
+osmnx
+
 pytest
 
 graphviz
