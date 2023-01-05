@@ -6,6 +6,8 @@
     "use_mask": true,
     "first_layer_embedding_size": 64,
     "filters": [
+        [64,64,64],
+        [64,64,64],
         [64,64,64]
     ],
     "batch_size": 32,
