@@ -125,7 +125,7 @@ def construct_adj(path, G_P, input_ts, output_path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--od_list", type=str, required=True, help='file to od_list')
-    parser.add_argument("--osm", type=str, required=True, help='Openstreetmap file')
+    #parser.add_argument("--osm", type=str, required=True, help='Openstreetmap file')
     parser.add_argument("--output", type=str, required=True, help="output")
     
     args = parser.parse_args()
@@ -155,8 +155,9 @@ if __name__ == '__main__':
                         jdx = id_list.index(int(buf_line.strip()))
                         f3.write(f'{int(10 * data[0][0][jdx])}\n')
     
-    G_P = ox.graph_from_xml(args.osm)
-    construct_adj(r'./osm/test.osm', G_P,
+    osm = './tmp_map.osm'
+    G_P = ox.graph_from_xml(osm)
+    construct_adj(osm, G_P,
                   [r'./flow001.txt',
                    r'./passtime001.txt',
                    r'./cch1001.txt'], './cch1.txt')

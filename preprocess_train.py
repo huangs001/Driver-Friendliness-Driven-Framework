@@ -11,8 +11,65 @@ import csv
 import osmnx as ox
 import re
 
+import osmnx as ox
+import warnings
+import argparse
+import shutil
+
+
+def gps_matching(traj, osm, out, buf_size=100):
+    warnings.filterwarnings("ignore")
+    csv_folder = traj
+    out_path = out
+
+    track_cnt = list()
+    file_name = list()
+    track = list()
+
+    file_list = [i for i in sorted(os.listdir(csv_folder)) if os.path.splitext(i)[1] == '.txt']
+
+    print("loading map")
+    # G = matching.model.graph_from_track(track, network='drive')
+    G = ox.graph_from_xml(osm)
+
+    print("loading csv")
+    buf_cnt = 0
+    buf_batch = buf_size
+
+    for f in file_list:
+        # suffix = os.path.splitext(f)[0]
+        file_name.append(f)
+        cnt = 0
+
+        for row in csv.reader(open(os.path.join(csv_folder, f))):
+            x1 = float(row[2])
+            y1 = float(row[3])
+            track.append([y1, x1])
+            cnt += 1
+        track_cnt.append(cnt)
+
+        buf_cnt += 1
+
+        if (buf_cnt % buf_batch == 0 and buf_cnt > 0) or buf_cnt == len(file_list):
+            track_np = np.array(track)
+            print(f"matching {buf_cnt}, total {len(file_list)}")
+            res = ox.nearest_edges(G, track_np[:, 1], track_np[:, 0])
+
+            print(f"matched {buf_cnt}, total {len(file_list)}")
+            cnt2 = 0
+            for i in range(0, len(track_cnt)):
+                with open(os.path.join(out_path, file_name[i]), 'w') as fo:
+                    for j in range(cnt2, cnt2 + track_cnt[i]):
+                        print(G.edges[res[j]], file=fo)
+                    cnt2 += track_cnt[i]
+
+            track.clear()
+            track_cnt.clear()
+            file_name.clear()
+
+
 def generate_adj(path, node2edge_out, edge_out, edge2edge_out):
-    G_BJ = ox.graph_from_xml('../pythonProject/osm/Bj.osm')
+    G_BJ = ox.graph_from_xml(path)
 
     G = ox.graph_from_xml(path)
     # A = nx.adjacency_data(G)
@@ -231,13 +288,19 @@ def convert_i(input1, input2, output, i):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--traj", type=str, help='trajectory data')
-    parser.add_argument("--match", type=str, required=True, help="trajectory matching")
+    #parser.add_argument("--match", type=str, required=True, help="trajectory matching")
     parser.add_argument("--osm", type=str, required=True, help="openstreetmap data")
     
     args = parser.parse_args()
 
-    road_path = './road.txt'
-    match_folder = args.match
+    # Copy the map, using in the route planning
+    shutil.copy(args.osm, './tmp_map.osm')
+  
+    match_folder = './traj_match'
+
+    os.makedirs(match_folder, exist_ok=True)
+    gps_matching(args.traj, args.osm, match_folder)
+
     file_list = os.listdir(match_folder)
     pattern = re.compile('<.*>')
     road_length = {}
@@ -255,6 +318,7 @@ if __name__ == '__main__':
                 for oid in osmid:
                     road_length[oid] = (data['length'], data['maxspeed'])
 
+    road_path = './road.txt'
     with open(os.path.join(road_path), 'w') as f:
         for d in road_length.items():
             print('{},{},{}'.format(d[0], d[1][0], d[1][1]), file=f)
@@ -285,7 +349,7 @@ if __name__ == '__main__':
 
     trains = ['passtime', 'flow', 'acc']
 
-    from sys import path as pylib #im naming it as pylib so that we won't get confused between os.path and sys.path 
+    from sys import path as pylib
     import os
     pylib += [os.path.join(os.path.abspath(os.path.dirname(os.path.realpath(__file__))), './Traffic Forecasting/Graph Convolution Network')]
 
