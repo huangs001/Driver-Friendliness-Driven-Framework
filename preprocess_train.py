@@ -356,4 +356,4 @@ if __name__ == '__main__':
     gcn = importlib.import_module('Traffic Forecasting.Graph Convolution Network.train')
 
     for t in trains:
-        gcn.run(['--config', f'./{t}.json', '--save', '--save_type', t])
+        gcn.run(['--config', f'./config/{t}.json', '--save', '--save_type', t])
