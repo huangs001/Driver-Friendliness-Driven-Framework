@@ -9,9 +9,9 @@ public:
 	std::string osmDataPath = R"(./result.txt)";
 
 	inline static const unsigned clusterTime = 60 * 15;
-	std::string bigFlowOutput = "./output/bj/flow/data";
-	std::string bigPtOutput = "./output/bj/passtime/data";
-	std::string bigAccOutput = "./output/bj/acc/data";
+	std::string bigFlowOutput = "./output/big/flow/data";
+	std::string bigPtOutput = "./output/big/passtime/data";
+	std::string bigAccOutput = "./output/big/acc/data";
 
 	inline static const double filterSpeed = 30;
 
@@ -79,9 +79,9 @@ public:
 	}
 
 	void setOut(const std::string &out) {
-		std::string bigFlowOutput = out + "/bj/flow/data";
-		std::string bigPtOutput = out + "./bj/passtime/data";
-		std::string bigAccOutput = out + "./bj/acc/data";
+		std::string bigFlowOutput = out + "/big/flow/data";
+		std::string bigPtOutput = out + "./big/passtime/data";
+		std::string bigAccOutput = out + "./big/acc/data";
 
 
 		std::string trjClsOutDir = out + "./small1/trjCls/";
@@ -100,9 +100,9 @@ public:
 		std::string smallPtOutput2 = out + "./small1/passtime/data";
 		std::string smallAccOutput2 = out + "./small1/acc/data";
 
-		std::string smallPlainFlowOutput2 = out + "./small1/flow/data.txt";
-		std::string smallPlainPtOutput2 = out + "./small1/passtime/data.txt";
-		std::string smallPlainAccOutput2 = out + "./small1/acc/data.txt";
+		std::string smallPlainFlowOutput2 = out + "./small1/flow/data2.txt";
+		std::string smallPlainPtOutput2 = out + "./small1/passtime/data2.txt";
+		std::string smallPlainAccOutput2 = out + "./small1/acc/data2.txt";
 
 	}
 };

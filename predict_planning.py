@@ -71,7 +71,6 @@ def construct_adj(path, G_P, input_ts, output_path):
             osmid = osmid[0]
 
         val_list = []
-        #default_list = [length / 5, length / 5, length / 5]
 
         for i in range(len(input_ts)):
             if osmid in ts_map[i]:
@@ -80,7 +79,6 @@ def construct_adj(path, G_P, input_ts, output_path):
                     val_list.append(ori_val)
                 else:
                     val_list.append(ori_val)
-                #val_list.append(statistics.mean(ts[i][ts_map[i][osmid]]))
             else:
                 val_list.append(default_list[i])
                 default_cnt += 1
@@ -129,13 +127,17 @@ if __name__ == '__main__':
     parser.add_argument("--output", type=str, required=True, help="output")
     
     args = parser.parse_args()
-
+    ###
     trains = ['passtime', 'flow', 'acc']
+    
+    from sys import path as pylib
+    import os
+    pylib += [os.path.join(os.path.abspath(os.path.dirname(os.path.realpath(__file__))), './Traffic Forecasting/Graph Convolution Network')]
 
     gcn = importlib.import_module('Traffic Forecasting.Graph Convolution Network.predict')
 
     for t in trains:
-        gcn.run(['--config', f'./config/{t}.json', '--output', t])
+        gcn.run(['--config', f'./config/{t}.json', '--type', t, '--output', t])
         data = np.load(f'./{t}.npy')
         #data = np.random.randint(0, 10, (1, 4, 150))
 

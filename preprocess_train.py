@@ -11,7 +11,6 @@ import csv
 import osmnx as ox
 import re
 
-import osmnx as ox
 import warnings
 import argparse
 import shutil
@@ -286,6 +285,17 @@ def convert_i(input1, input2, output, i):
                 r"{}/{}/{}/{}_id.txt".format(output, small, t, t))
 
 if __name__ == '__main__':
+    trains = ['passtime', 'flow', 'acc']
+
+    from sys import path as pylib
+    import os
+    pylib += [os.path.join(os.path.abspath(os.path.dirname(os.path.realpath(__file__))), './Traffic Forecasting/Graph Convolution Network')]
+
+    gcn = importlib.import_module('Traffic Forecasting.Graph Convolution Network.train')
+
+    for t in trains:
+        gcn.run(['--config', f'./config/{t}.json', '--save', '--save_type', t])
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--traj", type=str, help='trajectory data')
     #parser.add_argument("--match", type=str, required=True, help="trajectory matching")
@@ -338,6 +348,9 @@ if __name__ == '__main__':
     os.makedirs('./output/small1/passtime', exist_ok=True)
     os.makedirs('./output/small1/trjCls', exist_ok=True)
     os.makedirs('./output/small1/filter', exist_ok=True)
+    os.makedirs('./output/big/flow', exist_ok=True)
+    os.makedirs('./output/big/passtime', exist_ok=True)
+    os.makedirs('./output/big/acc', exist_ok=True)
 
     subprocess.run(['./HT Data Preprocessing/build/HT_process', '--traj_data', args.traj, '--traj_match', './traj_osmid',
                     '--road_data', road_path, '--edge_adj', 'edge.txt', '--node_adj', 'node.txt', '--output', './output'])

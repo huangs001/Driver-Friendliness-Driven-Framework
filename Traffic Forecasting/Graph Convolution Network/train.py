@@ -9,7 +9,7 @@ import argparse
 import numpy as np
 import mxnet as mx
 
-
+global_epoch = 1
 def run(args):
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, help='configuration file')
@@ -62,7 +62,7 @@ def run(args):
     train_loader, val_loader, test_loader = loaders
     val_y, test_y = true_values
 
-    global_epoch = 1
+    
     global_train_steps = training_samples // batch_size + 1
     all_info = []
     epochs = config['epochs']
@@ -110,7 +110,6 @@ def run(args):
         graph = mx.viz.plot_network(net)
         graph.format = 'png'
         graph.render('graph')
-
 
     def training(epochs):
         global global_epoch

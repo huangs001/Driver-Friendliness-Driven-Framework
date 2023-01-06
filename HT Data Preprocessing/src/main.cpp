@@ -60,8 +60,8 @@ void adjProcess(ConfigVal config) {
 		{
 					config.trjClsOutDir / std::filesystem::path("flow.txt"),
 					config.trjClsOutDir / std::filesystem::path("passtime.txt") ,
-					config.trjClsOutDir / std::filesystem::path("accelerate.txt") }, config.filterClsOutDir,
-		{ "flow.txt", "passtime.txt", "accelerate.txt" });
+					config.trjClsOutDir / std::filesystem::path("acctxt") }, config.filterClsOutDir,
+		{ "flow.txt", "passtime.txt", "acc.txt" });
 }
 
 void getPlainData(ConfigVal config) {
@@ -116,12 +116,9 @@ void getPlainData(ConfigVal config) {
 	DataSaveLoad::dumpPlainData(ptFilterData, config.smallPlainPtOutput, [&](DataSaveLoad::IdType id, DataSaveLoad::CountType cnt, DataSaveLoad::ValueType val) {
 		double pval = 0;
 		if (cnt > 0) {
-			//pval = std::floor(val / cnt / 100);
+
 			pval = val / cnt;
-			//pval = std::min(15.0, pval);
-			/*if (val / cnt / 100 < 1 && val / cnt > 0.5) {
-				pval = 1;
-			}*/
+
 			if (val / cnt < 1) {
 				pval = 1;
 			}
@@ -236,12 +233,12 @@ int main(int argc, char *argv[])
 {
 	args::ArgumentParser parser("HT data processing", "");
 	args::HelpFlag help(parser, "help", "display this help menu", { 'h', "help" });
-	args::ValueFlag<std::string> arg1(parser, "traj_data", "The trajectory data", { "traj_data" });
-	args::ValueFlag<std::string> arg2(parser, "traj_match", "The data that trajectory mapping to roads", { "traj_match" });
-	args::ValueFlag<std::string> arg3(parser, "road_data", "The road data", { "road_data" });
-	args::ValueFlag<std::string> arg4(parser, "edge_adj", "The edge adjacency matrix of the map", { "edge_adj" });
-	args::ValueFlag<std::string> arg5(parser, "node_adj", "The node adjacency matrix of the map", { "node_adj" });
-	args::ValueFlag<std::string> arg6(parser, "output", "The output folder", { "node_adj" });
+	args::ValueFlag<std::string> arg1(parser, "traj_data", "The trajectory data", { "traj_data" }, args::Options::Required);
+	args::ValueFlag<std::string> arg2(parser, "traj_match", "The data that trajectory mapping to roads", { "traj_match" }, args::Options::Required);
+	args::ValueFlag<std::string> arg3(parser, "road_data", "The road data", { "road_data" }, args::Options::Required);
+	args::ValueFlag<std::string> arg4(parser, "edge_adj", "The edge adjacency matrix of the map", { "edge_adj" }, args::Options::Required);
+	args::ValueFlag<std::string> arg5(parser, "node_adj", "The node adjacency matrix of the map", { "node_adj" }, args::Options::Required);
+	args::ValueFlag<std::string> arg6(parser, "output", "The output folder", { "output" }, args::Options::Required);
 
 	if (argc <= 1) {
 		std::cerr << parser;
@@ -282,6 +279,7 @@ int main(int argc, char *argv[])
 	trjCls(config1);
 	adjProcess(config1);
 	getPlainData(config1);
+	getPlainData2(config1);
 
 	return 0;
 }

@@ -13,6 +13,7 @@ from utils import (construct_model, generate_data,
 def run(args):
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, help='configuration file')
+    parser.add_argument("--type", type=str, help='', required=True)
     parser.add_argument("--output", type=str, help='output result', required=True)
     args = parser.parse_args(args)
 
@@ -29,7 +30,7 @@ def run(args):
     point_per_day = point_per_hour * 24
     point_per_week = point_per_day * 7
 
-    mod = mx.mod.Module.load('STSGCN', int(config['epochs']))
+    mod = mx.mod.Module.load(args.type, int(config['epochs']))
 
     mod.bind(
         for_training=False,

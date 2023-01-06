@@ -26,11 +26,27 @@ void AbstractGenerator::start(std::size_t threadNum)
 	namespace fs = std::filesystem;
 
 	//std::stringstream sss("2008-2-2 00:00:00"), sse("2008-2-9 00:00:00");
-	std::stringstream sss("2008-2-2 00:00:00"), sse("2008-2-16 00:00:00");
+	std::istringstream sss("2008-2-2 00:00:00"), sse("2008-2-16 00:00:00");
 	
 	std::tm tm1 = {}, tm2 = {};
-	sss >> std::get_time(&tm1, "%Y-%m-%d %H:%M:%S");
-	sse >> std::get_time(&tm2, "%Y-%m-%d %H:%M:%S");
+	tm1.tm_year = 2008 - 1900;
+	tm1.tm_mon = 2 - 1;
+	tm1.tm_mday = 2;
+	tm1.tm_wday = 2008;
+	tm1.tm_sec = 0;
+	tm1.tm_min = 0;
+	tm1.tm_hour = 0;
+
+	tm2.tm_year = 2008 - 1900;
+	tm2.tm_mon = 2 - 1;
+	tm2.tm_mday = 16;
+	tm2.tm_wday = 2008;
+	tm2.tm_sec = 0;
+	tm2.tm_min = 0;
+	tm2.tm_hour = 0;
+	//sss >> std::get_time(&tm1, "%Y-%m-%d %H:%M:%S");
+	//sse >> std::get_time(&tm2, "%Y-%m-%d %H:%M:%S");
+	//std::cout <<"++++" << tm1.tm_mday << std::endl;
 	auto tps = std::mktime(&tm1);
 	auto tpe = std::mktime(&tm2);
 	std::cout << (tpe - tps + clusterTime) / clusterTime << std::endl;
