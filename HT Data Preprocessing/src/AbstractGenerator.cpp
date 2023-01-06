@@ -32,7 +32,6 @@ void AbstractGenerator::start(std::size_t threadNum)
 	tm1.tm_year = 2008 - 1900;
 	tm1.tm_mon = 2 - 1;
 	tm1.tm_mday = 2;
-	tm1.tm_wday = 2008;
 	tm1.tm_sec = 0;
 	tm1.tm_min = 0;
 	tm1.tm_hour = 0;
@@ -40,7 +39,6 @@ void AbstractGenerator::start(std::size_t threadNum)
 	tm2.tm_year = 2008 - 1900;
 	tm2.tm_mon = 2 - 1;
 	tm2.tm_mday = 16;
-	tm2.tm_wday = 2008;
 	tm2.tm_sec = 0;
 	tm2.tm_min = 0;
 	tm2.tm_hour = 0;
