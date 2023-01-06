@@ -17,10 +17,6 @@ make
 ## Mandatory
 `--graph_path`, graph data with three metrics
 
-`--origin`, origin point
-
-`--dest`, destination point
-
 `--output`, output of routing paths
 
 `OD...`, list of origin and destination points
