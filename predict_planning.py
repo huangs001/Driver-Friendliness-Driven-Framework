@@ -164,7 +164,7 @@ if __name__ == '__main__':
     construct_adj(osm, G_P,
                   [r'./flow001.txt',
                    r'./passtime001.txt',
-                   r'./cch1001.txt'], './cch1.txt')
+                   r'./acc001.txt'], './cch1.txt')
 
     
     cmd = ['./Route Planning/build/DFNav_routing', '--graph_path', './cch1.txt', '--output', args.output]

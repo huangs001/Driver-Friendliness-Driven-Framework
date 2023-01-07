@@ -12,7 +12,7 @@ private:
 public:
 	//inline static const std::string output = ConfigVal::bjFlowOutput;
 
-	FlowGenerator(const std::string& csvFolder, const std::string& osmidFolder, const std::string& osmRoadData, const std::string &output);
+	FlowGenerator(const std::string& csvFolder, const std::string& osmidFolder, const std::string& osmRoadData, const std::unordered_set<DataLine::IdType> &enhanced, const std::string &output);
 
 	void updateFile(std::size_t threadNo, std::size_t newName) override {};
 

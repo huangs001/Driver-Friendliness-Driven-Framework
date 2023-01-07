@@ -13,8 +13,8 @@
 #include "DataSaveLoad.h"
 #include "ConfigVal.h"
 
-FlowGenerator::FlowGenerator(const std::string& csvFolder, const std::string& osmidFolder, const std::string& osmRoadData, const std::string& output) :
-	AbstractGenerator(csvFolder, osmidFolder, output), roadLength(osmRoadData) {}
+FlowGenerator::FlowGenerator(const std::string& csvFolder, const std::string& osmidFolder, const std::string& osmRoadData, const std::unordered_set<DataLine::IdType> &enhanced, const std::string& output) :
+	AbstractGenerator(csvFolder, osmidFolder, enhanced, output), roadLength(osmRoadData) {}
 
 DataSaveLoad::InnerType FlowGenerator::hit(std::size_t threadNo, unsigned lineIdx, DataLine::IdType osmid, DataLine::IdType taxiId, std::time_t ts, double lon, double lat, const DataSaveLoad::InnerType& oldValue)
 {

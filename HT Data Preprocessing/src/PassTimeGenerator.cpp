@@ -16,8 +16,8 @@ double PassTimeGenerator::calcSpeedInfo(std::size_t threadNo, std::time_t ts, do
 }
 
 
-PassTimeGenerator::PassTimeGenerator(const std::string& csvFolder, const std::string& osmidFolder, const std::string& osmRoadData, const std::string& output) :
-	AbstractGenerator(csvFolder, osmidFolder, output),
+PassTimeGenerator::PassTimeGenerator(const std::string& csvFolder, const std::string& osmidFolder, const std::string& osmRoadData, const std::unordered_set<DataLine::IdType> &enhanced, const std::string& output) :
+	AbstractGenerator(csvFolder, osmidFolder, enhanced, output),
 	osmRoadData(osmRoadData), roadLength(osmRoadData)
 {
 

@@ -17,8 +17,8 @@ double AccelerateGenerator::calcSpeedInfo(std::size_t threadNo, std::time_t ts, 
 	return CalTools::getSpeedFromLatLonInMeterPerSecond(lat, lon, this->lastLatLonAll[threadNo].first, this->lastLatLonAll[threadNo].second, ts - this->lastTimeAll[threadNo]);
 }
 
-AccelerateGenerator::AccelerateGenerator(const std::string& csvFolder, const std::string& osmidFolder, const std::string& osmRoadData, const std::string& output) :
-	AbstractGenerator(csvFolder, osmidFolder, output),
+AccelerateGenerator::AccelerateGenerator(const std::string& csvFolder, const std::string& osmidFolder, const std::string& osmRoadData, const std::unordered_set<DataLine::IdType> &enhanced, const std::string& output) :
+	AbstractGenerator(csvFolder, osmidFolder, enhanced, output),
 	osmRoadData(osmRoadData), roadLength(osmRoadData)
 {
 

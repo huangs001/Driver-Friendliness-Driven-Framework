@@ -321,7 +321,7 @@ def vecClusterAnalysis(args):
     inte = []
     for tr in trs:
         trVecs.append(tr[0][0])
-    clsnum = 10
+    clsnum = 10 if len(trVecs) >= 10 else len(trVecs)
     print(1)
     km = KMeans(n_clusters=clsnum, random_state=2016)
     clusters = km.fit(trVecs).labels_.tolist()

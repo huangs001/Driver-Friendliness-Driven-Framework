@@ -19,7 +19,7 @@ private:
 	double calcSpeedInfo(std::size_t threadNo, std::time_t ts, double lat, double lon);
 	inline static const double filterSpeed = ConfigVal::filterSpeed;
 public:
-	PassTimeGenerator(const std::string& csvFolder, const std::string& osmidFolder, const std::string &osmRoadData, const std::string& output);
+	PassTimeGenerator(const std::string& csvFolder, const std::string& osmidFolder, const std::string &osmRoadData, const std::unordered_set<DataLine::IdType> &enhanced, const std::string& output);
 
 	void start(std::size_t threadNum) override;
 

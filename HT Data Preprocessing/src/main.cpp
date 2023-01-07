@@ -21,16 +21,18 @@ void testCalc()
 }
 
 void generateData(ConfigVal config) {
-	FlowGenerator fg(config.csv_folder, config.osmid_folder, config.osmDataPath, config.bigFlowOutput);
+	AdjGraphFilter adjFilter(std::filesystem::path(config.csv_folder), std::filesystem::path(config.osmid_folder), config.smallNodePath, config.smallEdgePath);
+	auto edgeSet = adjFilter.edgeOsmIdSet();
+	FlowGenerator fg(config.csv_folder, config.osmid_folder, config.osmDataPath, edgeSet, config.bigFlowOutput);
 	fg.start(2);
 
 
 	std::cout << "Step 1" << std::endl;
-	PassTimeGenerator ptg(config.csv_folder, config.osmid_folder, config.osmDataPath, config.bigPtOutput);
+	PassTimeGenerator ptg(config.csv_folder, config.osmid_folder, config.osmDataPath, edgeSet, config.bigPtOutput);
 	ptg.start(2);
 	std::cout << "Step 2" << std::endl;
 
-	AccelerateGenerator ag(config.csv_folder, config.osmid_folder, config.osmDataPath, config.bigAccOutput);
+	AccelerateGenerator ag(config.csv_folder, config.osmid_folder, config.osmDataPath, edgeSet, config.bigAccOutput);
 	ag.start(2);
 	std::cout << "End" << std::endl;
 }

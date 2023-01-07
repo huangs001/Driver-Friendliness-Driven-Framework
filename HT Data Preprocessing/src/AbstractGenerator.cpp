@@ -15,9 +15,10 @@
 #include "DataLine.h"
 
 
-AbstractGenerator::AbstractGenerator(const std::string& csvFolder, const std::string& osmidFolder, const std::string& outputPath) :
+AbstractGenerator::AbstractGenerator(const std::string& csvFolder, const std::string& osmidFolder, const std::unordered_set<DataLine::IdType> &enhanced, const std::string& outputPath) :
 	csvFolder(csvFolder),
 	osmidFolder(osmidFolder),
+	enhanced(enhanced),
 	outputPath(outputPath)
 {}
 
@@ -133,6 +134,10 @@ void AbstractGenerator::start(std::size_t threadNum)
 			}
 		}
 		//data.clear();
+	}
+
+	for (auto &oid : enhanced) {
+		osmData.try_emplace(oid, (tpe - tps + clusterTime) / clusterTime);
 	}
 
 	DataSaveLoad::dumpData(osmData, outputPath);

@@ -285,17 +285,6 @@ def convert_i(input1, input2, output, i):
                 r"{}/{}/{}/{}_id.txt".format(output, small, t, t))
 
 if __name__ == '__main__':
-    trains = ['passtime', 'flow', 'acc']
-
-    from sys import path as pylib
-    import os
-    pylib += [os.path.join(os.path.abspath(os.path.dirname(os.path.realpath(__file__))), './Traffic Forecasting/Graph Convolution Network')]
-
-    gcn = importlib.import_module('Traffic Forecasting.Graph Convolution Network.train')
-
-    for t in trains:
-        gcn.run(['--config', f'./config/{t}.json', '--save', '--save_type', t])
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--traj", type=str, help='trajectory data')
     #parser.add_argument("--match", type=str, required=True, help="trajectory matching")
@@ -337,7 +326,7 @@ if __name__ == '__main__':
 
     print("Generating adj...")
     main_graph = args.osm
-    generate_adj(main_graph, main_graph,
+    generate_adj(main_graph,
                     os.path.join('node.txt'),
                     os.path.join('edge.txt'),
                     os.path.join('edge2edge.txt'))

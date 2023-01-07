@@ -4,6 +4,7 @@
 #include "DataSaveLoad.h"
 #include "ConfigVal.h"
 #include "DataLine.h"
+#include <unordered_set>
 
 class AbstractGenerator
 {
@@ -11,10 +12,11 @@ private:
 	std::string csvFolder;
 	std::string osmidFolder;
 	std::string outputPath;
+	std::unordered_set<DataLine::IdType> enhanced;
 
 	const unsigned clusterTime = ConfigVal::clusterTime;
 public:
-	AbstractGenerator(const std::string& csvFolder, const std::string& osmidFolder, const std::string& outputPath);
+	AbstractGenerator(const std::string& csvFolder, const std::string& osmidFolder, const std::unordered_set<DataLine::IdType> &enhanced, const std::string& outputPath);
 
 	virtual void start(std::size_t threadNum);
 
