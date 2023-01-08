@@ -31,7 +31,7 @@ sklearn
 `--osm`, OpenStreetMap file
 
 # 4. Preprocessing and traffic forecasting
-`python preprcess_forecast.py --traj_data /path/to/trajectory --osm /path/to/osm`
+`python preprocess_forecast.py --traj_data /path/to/trajectory --osm /path/to/osm`
 
 `--traj_data`, trajectory data
 
