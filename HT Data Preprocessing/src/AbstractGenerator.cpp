@@ -139,6 +139,6 @@ void AbstractGenerator::start(std::size_t threadNum)
 	for (auto &oid : enhanced) {
 		osmData.try_emplace(oid, (tpe - tps + clusterTime) / clusterTime);
 	}
-
+	
 	DataSaveLoad::dumpData(osmData, outputPath);
 }

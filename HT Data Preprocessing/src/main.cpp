@@ -277,6 +277,9 @@ int main(int argc, char *argv[])
 
 	config1.setOut(arg6_val);
 
+	std::cout << arg6_val << std::endl;
+	std::cout << config1.bigFlowOutput << std::endl;
+
 	generateData(config1);
 	trjCls(config1);
 	adjProcess(config1);

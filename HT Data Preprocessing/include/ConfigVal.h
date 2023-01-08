@@ -79,30 +79,29 @@ public:
 	}
 
 	void setOut(const std::string &out) {
-		std::string bigFlowOutput = out + "/big/flow/data";
-		std::string bigPtOutput = out + "./big/passtime/data";
-		std::string bigAccOutput = out + "./big/acc/data";
+		bigFlowOutput = out + "./big/flow/data";
+		bigPtOutput = out + "./big/passtime/data";
+		bigAccOutput = out + "./big/acc/data";
 
+		trjClsOutDir = out + "./small1/trjCls/";
 
-		std::string trjClsOutDir = out + "./small1/trjCls/";
+		filterClsOutDir = out + "./small1/filter/";
 
-		std::string filterClsOutDir = out + "./small1/filter/";
+		smallFlowOutput = out + "./small1/flow/data";
+		smallPtOutput = out + "./small1/passtime/data";
+		smallAccOutput = out + "./small1/acc/data";
 
-		std::string smallFlowOutput = out + "./small1/flow/data";
-		std::string smallPtOutput = out + "./small1/passtime/data";
-		std::string smallAccOutput = out + "./small1/acc/data";
+		smallPlainFlowOutput = out + "./small1/flow/data.txt";
+		smallPlainPtOutput = out + "./small1/passtime/data.txt";
+		smallPlainAccOutput = out + "./small1/acc/data.txt";
 
-		std::string smallPlainFlowOutput = out + "./small1/flow/data.txt";
-		std::string smallPlainPtOutput = out + "./small1/passtime/data.txt";
-		std::string smallPlainAccOutput = out + "./small1/acc/data.txt";
+		smallFlowOutput2 = out + "./small1/flow/data";
+		smallPtOutput2 = out + "./small1/passtime/data";
+		smallAccOutput2 = out + "./small1/acc/data";
 
-		std::string smallFlowOutput2 = out + "./small1/flow/data";
-		std::string smallPtOutput2 = out + "./small1/passtime/data";
-		std::string smallAccOutput2 = out + "./small1/acc/data";
-
-		std::string smallPlainFlowOutput2 = out + "./small1/flow/data2.txt";
-		std::string smallPlainPtOutput2 = out + "./small1/passtime/data2.txt";
-		std::string smallPlainAccOutput2 = out + "./small1/acc/data2.txt";
+		smallPlainFlowOutput2 = out + "./small1/flow/data2.txt";
+		smallPlainPtOutput2 = out + "./small1/passtime/data2.txt";
+		smallPlainAccOutput2 = out + "./small1/acc/data2.txt";
 
 	}
 };

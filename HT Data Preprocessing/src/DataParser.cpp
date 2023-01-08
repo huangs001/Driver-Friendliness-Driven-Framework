@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <iostream>
 #include "SliceMultiThread.h"
 #include "DataLine.h"
 
@@ -43,6 +44,7 @@ std::vector<DataLine> DataParser::parse(std::size_t fileNum)
 	std::string line1, line2;
 
 	unsigned lineCnt = 0;
+
 	while (std::getline(if1, line1) && std::getline(if2, line2)) {
 		std::stringstream ss1(line1);
 		std::string id, timeStamp, lon, lat;

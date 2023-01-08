@@ -15,12 +15,12 @@
     "epochs": 200,
     "max_update_factor": 1,
     "ctx": 0,
-    "adj_filename": "./data/small1/flow/flow.csv",
-    "id_filename": "./data/small1/flow/flow_id.txt",
-    "graph_signal_matrix_filename": "./data/small1/flow/flow.npz",
+    "adj_filename": "./train/data/small1/flow/flow.csv",
+    "id_filename": "./train/data/small1/flow/flow_id.txt",
+    "graph_signal_matrix_filename": "./train/data/small1/flow/flow.npz",
     "num_of_vertices": 150,
     "points_per_hour": 4,
     "num_for_predict": 4,
     "num_of_features": 1,
-    "time_step_filename": "./data/small1/flow/flow_time.txt"
+    "time_step_filename": "./train/data/small1/flow/flow_time.txt"
 }

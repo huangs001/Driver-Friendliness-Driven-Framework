@@ -13,6 +13,7 @@ from utils import (construct_model, generate_data,
 def run(args):
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, help='configuration file')
+    parser.add_argument("--test2", action="store_true", help="test program")
     parser.add_argument("--type", type=str, help='', required=True)
     parser.add_argument("--output", type=str, help='output result', required=True)
     args = parser.parse_args(args)
@@ -30,7 +31,11 @@ def run(args):
     point_per_day = point_per_hour * 24
     point_per_week = point_per_day * 7
 
-    mod = mx.mod.Module.load(args.type, int(config['epochs']))
+    epochs = int(config['epochs'])
+    if args.test2:
+        epochs = 2
+
+    mod = mx.mod.Module.load(args.type, epochs)
 
     mod.bind(
         for_training=False,
@@ -54,7 +59,8 @@ def run(args):
     predict = mod.predict(seq)
     print(predict)
 
-    np.save(args.output, predict.asnumpy())
+    import os
+    np.save(os.path.join('./forecast', args.output), predict.asnumpy())
 
 if __name__ == '__main__':
     import sys

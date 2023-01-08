@@ -14,6 +14,7 @@ def run(args):
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, help='configuration file')
     parser.add_argument("--test", action="store_true", help="test program")
+    parser.add_argument("--test2", action="store_true", help="test program")
     parser.add_argument("--plot", help="plot network graph", action="store_true")
     parser.add_argument("--save", action="store_true", help="save model", default='Ours')
     parser.add_argument("--save_type", type=str)
@@ -164,6 +165,8 @@ def run(args):
 
     if args.test:
         epochs = 5
+    if args.test2:
+        epochs = 2
     print("train")
     training(epochs)
 

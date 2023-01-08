@@ -1,7 +1,7 @@
-# DFNav
-An End-to-End Framework for Enhancing Driver Friendliness in Graph Neural Network Based Navigation Systems
+# L2PN<font size=4>AV</font>
+A Learning-to-Planning Framework for Enhancing Driver Friendliness in Graph Neural Network-Based Navigation Systems
 
-# Requirement
+# 1. Requirements
 C++ 17 or higher
 
 Python >= 3.7
@@ -20,25 +20,26 @@ pandas
 
 sklearn
 
-# Installation
+# 2. Installation
 `bash ./install.sh`
 
-# Preprocess and train model
-## Usage
-`python preprocess_train.py --traj_data /path/to/trajectory --osm /path/to/osm`
+# 3. Training
+`python train.py --traj_data /path/to/trajectory --osm /path/to/osm`
 
-## Mandatory
 `--traj_data`, trajectory data
 
-`--osm`, openstreetmap file
+`--osm`, OpenStreetMap file
 
-# Predict and plan route
-## Usage
-`python predict_planning.py --od_list /path/to/odlist --output /path/to/output`
+# 4. Preprocessing and traffic forecasting
+`python preprcess_forecast.py --traj_data /path/to/trajectory --osm /path/to/osm`
 
-## Mandatory
-`--od_list`, file contains multiple origin and destination points
+`--traj_data`, trajectory data
 
-`--output`, output of routing paths
+`--osm`, OpenStreetMap file
 
+# 5. Route planning
+`python route_plan.py --od_list /path/to/odlist --output /path/to/output`
 
+`--od_list`, file containing multiple ODs
+
+`--output`, planned paths

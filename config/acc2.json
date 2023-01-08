@@ -15,12 +15,12 @@
     "epochs": 200,
     "max_update_factor": 1,
     "ctx": 0,
-    "adj_filename": "./train/data/small1/passtime/passtime.csv",
-    "id_filename": "./train/data/small1/passtime/passtime_id.txt",
-    "graph_signal_matrix_filename": "./train/data/small1/passtime/passtime.npz",
+    "adj_filename": "./forecast/data/small1/acc/acc.csv",
+    "id_filename": "./forecast/data/small1/acc/acc_id.txt",
+    "graph_signal_matrix_filename": "./forecast/data/small1/acc/acc.npz",
     "num_of_vertices": 150,
     "points_per_hour": 4,
     "num_for_predict": 4,
     "num_of_features": 1,
-    "time_step_filename": "./train/data/small1/passtime/passtime_time.txt"
+    "time_step_filename": "./forecast/data/small1/acc/acc_time.txt"
 }

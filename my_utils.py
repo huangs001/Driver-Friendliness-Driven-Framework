@@ -1,22 +1,18 @@
-import argparse
 import subprocess
 import os
 import importlib
 
 import numpy as np
-import time
 import datetime
 import pandas as pd
 import csv
-import osmnx as ox
 import re
-
 import warnings
-import argparse
 import shutil
 
 
 def gps_matching(traj, osm, out, buf_size=100):
+    import osmnx as ox
     warnings.filterwarnings("ignore")
     csv_folder = traj
     out_path = out
@@ -68,6 +64,7 @@ def gps_matching(traj, osm, out, buf_size=100):
 
 
 def generate_adj(path, node2edge_out, edge_out, edge2edge_out):
+    import osmnx as ox
     G_BJ = ox.graph_from_xml(path)
 
     G = ox.graph_from_xml(path)
@@ -130,6 +127,7 @@ def generate_adj(path, node2edge_out, edge_out, edge2edge_out):
             print(' '.join([str(u), str(v)]), file=f)
 
 def output_id(path, main_graph, outpath):
+    import osmnx as ox
     G1 = ox.graph_from_xml(path)
     G_BJ = main_graph
     # print(len(G1.edges))
@@ -284,28 +282,21 @@ def convert_i(input1, input2, output, i):
                 r"{}/{}/{}/{}_time.txt".format(output, small, t, t),
                 r"{}/{}/{}/{}_id.txt".format(output, small, t, t))
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--traj", type=str, help='trajectory data')
-    #parser.add_argument("--match", type=str, required=True, help="trajectory matching")
-    parser.add_argument("--osm", type=str, required=True, help="openstreetmap data")
-    
-    args = parser.parse_args()
 
-    # Copy the map, using in the route planning
-    shutil.copy(args.osm, './tmp_map.osm')
-  
-    match_folder = './traj_match'
-
+def step1(match_folder, traj, osm, road_path, outpath):
+    shutil.rmtree(match_folder)
     os.makedirs(match_folder, exist_ok=True)
-    gps_matching(args.traj, args.osm, match_folder)
+    gps_matching(traj, osm, match_folder)
 
     file_list = os.listdir(match_folder)
     pattern = re.compile('<.*>')
     road_length = {}
-    os.makedirs('./traj_osmid', exist_ok=True)
+    traj_osmid = os.path.join(outpath, './traj_osmid')
+
+    shutil.rmtree(traj_osmid)
+    os.makedirs(traj_osmid, exist_ok=True)
     for file in file_list:
-        with open(os.path.join(match_folder, file)) as f, open(f'./traj_osmid/{file}', 'w') as f2:
+        with open(os.path.join(match_folder, file)) as f, open(os.path.join(traj_osmid, f'{file}'), 'w') as f2:
             for l in f:
                 l = pattern.sub('\"\"', l)
                 data = eval(l)
@@ -317,7 +308,6 @@ if __name__ == '__main__':
                 for oid in osmid:
                     road_length[oid] = (data['length'], data['maxspeed'])
 
-    road_path = './road.txt'
     with open(os.path.join(road_path), 'w') as f:
         for d in road_length.items():
             print('{},{},{}'.format(d[0], d[1][0], d[1][1]), file=f)
@@ -325,37 +315,58 @@ if __name__ == '__main__':
     print("Done")
 
     print("Generating adj...")
-    main_graph = args.osm
+    main_graph = osm
     generate_adj(main_graph,
-                    os.path.join('node.txt'),
-                    os.path.join('edge.txt'),
-                    os.path.join('edge2edge.txt'))
+                    os.path.join(outpath, 'node.txt'),
+                    os.path.join(outpath, 'edge.txt'),
+                    os.path.join(outpath, 'edge2edge.txt'))
     print("Done")
 
-    os.makedirs('./output/small1/acc', exist_ok=True)
-    os.makedirs('./output/small1/flow', exist_ok=True)
-    os.makedirs('./output/small1/passtime', exist_ok=True)
-    os.makedirs('./output/small1/trjCls', exist_ok=True)
-    os.makedirs('./output/small1/filter', exist_ok=True)
-    os.makedirs('./output/big/flow', exist_ok=True)
-    os.makedirs('./output/big/passtime', exist_ok=True)
-    os.makedirs('./output/big/acc', exist_ok=True)
 
-    subprocess.run(['./HT Data Preprocessing/build/HT_process', '--traj_data', args.traj, '--traj_match', './traj_osmid',
-                    '--road_data', road_path, '--edge_adj', 'edge.txt', '--node_adj', 'node.txt', '--output', './output'])
+def step2(traj, road_path, outpath):
+    base_out = os.path.join(outpath, 'output/')
+    os.makedirs(os.path.join(base_out, './small1/acc'), exist_ok=True)
+    os.makedirs(os.path.join(base_out, './small1/flow'), exist_ok=True)
+    os.makedirs(os.path.join(base_out, './small1/passtime'), exist_ok=True)
+    os.makedirs(os.path.join(base_out, './small1/trjCls'), exist_ok=True)
+    os.makedirs(os.path.join(base_out, './small1/filter'), exist_ok=True)
+    os.makedirs(os.path.join(base_out, './big/flow'), exist_ok=True)
+    os.makedirs(os.path.join(base_out, './big/passtime'), exist_ok=True)
+    os.makedirs(os.path.join(base_out, './big/acc'), exist_ok=True)
 
-    cluster = importlib.import_module('Traffic Forecasting.Traj Clustering.cluster')
-    cluster.main(['--traj', args.traj, '--traj_mapping', './traj_osmid', '--output', './traj_result'])
+    traj_osmid = os.path.join(outpath, 'traj_osmid')
+    edge_txt = os.path.join(outpath, 'edge.txt')
+    node_txt = os.path.join(outpath, 'node.txt')
 
-    convert_i('./output', './traj_result', './data', 1)
+    subprocess.run(['./HT Data Preprocessing/build/HT_process', '--traj_data', traj, '--traj_match', traj_osmid,
+                    '--road_data', road_path, '--edge_adj', edge_txt, '--node_adj', node_txt, '--output', base_out])
+    print(['./HT Data Preprocessing/build/HT_process', '--traj_data', traj, '--traj_match', traj_osmid,
+                    '--road_data', road_path, '--edge_adj', edge_txt, '--node_adj', node_txt, '--output', base_out])
 
-    trains = ['passtime', 'flow', 'acc']
 
-    from sys import path as pylib
-    import os
-    pylib += [os.path.join(os.path.abspath(os.path.dirname(os.path.realpath(__file__))), './Traffic Forecasting/Graph Convolution Network')]
+def step3(traj, outpath, cluster_folder):
+    traj_osmid = os.path.join(outpath, './traj_osmid')
+    traj_result = os.path.join(outpath, './traj_result')
+    up_output = os.path.join(outpath, './output')
 
-    gcn = importlib.import_module('Traffic Forecasting.Graph Convolution Network.train')
+    if cluster_folder is None:
+        cluster = importlib.import_module('Traffic Forecasting.Traj Clustering.cluster')
+        cluster.main(['--traj', traj, '--traj_mapping', traj_osmid, '--output', traj_result])
+        convert_i(up_output, traj_result, os.path.join(outpath, './data'), 1)
+    else:
+        convert_i(up_output, cluster_folder, os.path.join(outpath, './data'), 1)
 
-    for t in trains:
-        gcn.run(['--config', f'./config/{t}.json', '--save', '--save_type', t])
+def preprocess(osm, traj, outpath, cluster_folder=None):
+    match_folder = os.path.join(outpath, 'traj_match')
+    road_path = os.path.join(outpath, 'road.txt')
+    
+    step1(match_folder, traj, osm, road_path, outpath)
+
+    step2(traj, road_path, outpath)
+
+    step3(traj, outpath, cluster_folder)
+    
+
+if __name__ == '__main__':
+    pass
+

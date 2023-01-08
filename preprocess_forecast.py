@@ -1,11 +1,9 @@
 import argparse
 import importlib
-import subprocess
 import numpy as np
 
-import osmnx as ox
-import pickle
 import statistics
+import os
 
 def load_ts(input_ts):
     print(f'Loading {input_ts}')
@@ -39,7 +37,7 @@ def construct_adj(path, G_P, input_ts, output_path):
     x, y, z = [sum(statistics.mean(ts[i][k]) for k in ts_map[i].values()) for i in range(len(input_ts))]
     print(x, y, z)
     weights = [1, 1, y / z]
-
+    import osmnx as ox
     G = ox.graph_from_xml(path)
     # A = nx.adjacency_data(G)
 
@@ -119,15 +117,7 @@ def construct_adj(path, G_P, input_ts, output_path):
             f.write(f'{l[0]},{l[1]},{l[2]},{l[3]},{l[4]},{l[5]},{blur[l[0]]},{l[6]},{l[7]}\n')
 
 
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--od_list", type=str, required=True, help='file to od_list')
-    #parser.add_argument("--osm", type=str, required=True, help='Openstreetmap file')
-    parser.add_argument("--output", type=str, required=True, help="output")
-    
-    args = parser.parse_args()
-    ###
+def multi_train(base_dir):
     trains = ['passtime', 'flow', 'acc']
     
     from sys import path as pylib
@@ -136,12 +126,17 @@ if __name__ == '__main__':
 
     gcn = importlib.import_module('Traffic Forecasting.Graph Convolution Network.predict')
 
+
     for t in trains:
-        gcn.run(['--config', f'./config/{t}.json', '--type', t, '--output', t])
-        data = np.load(f'./{t}.npy')
+        gcn.run(['--config', f'./config/{t}2.json', '--type', t, '--output', t])
+        data = np.load(os.path.join(base_dir, f'./{t}.npy'))
         #data = np.random.randint(0, 10, (1, 4, 150))
 
-        with open(f'./output/small1/{t}/data.txt') as f1, open(f'./output/small1/{t}/data2.txt') as f2, open(f'./{t}001.txt', 'w') as f3:
+        onedata = os.path.join(base_dir, f'./output/small1/{t}/data.txt')
+        twodata = os.path.join(base_dir, f'./output/small1/{t}/data2.txt')
+        threedata = os.path.join(base_dir, f'./{t}001.txt')
+
+        with open(onedata) as f1, open(twodata) as f2, open(threedata, 'w') as f3:
             id_list = list()
             for idx, line in enumerate(f1):
                 if idx % 2 == 0:
@@ -158,22 +153,32 @@ if __name__ == '__main__':
                         f3.write(f'{int(10 * data[0][0][jdx])}\n')
                     else:
                         f3.write(f'{10 * int(line.split()[0])}\n')
+
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--traj", type=str, required=True, help='file to od_list')
+    parser.add_argument("--osm", type=str, required=True, help='Openstreetmap file')
     
-    osm = './tmp_map.osm'
+    args = parser.parse_args()
+
+    base_dir = './forecast'
+
+    os.makedirs(base_dir, exist_ok=True)
+
+    import my_utils
+    my_utils.preprocess(args.osm, args.traj, base_dir, './train/traj_result/')
+
+    ###
+    multi_train(base_dir)
+
+    trains = ['passtime', 'flow', 'acc']
+    
+    osm = args.osm
+    tmpout = os.path.join(base_dir, './cch1.txt')
+    import osmnx as ox
     G_P = ox.graph_from_xml(osm)
     construct_adj(osm, G_P,
-                  [r'./flow001.txt',
-                   r'./passtime001.txt',
-                   r'./acc001.txt'], './cch1.txt')
+                  [os.path.join(base_dir, f'./{t}001.txt') for t in trains], tmpout)
 
-    
-    cmd = ['./Route Planning/build/DFNav_routing', '--graph_path', './cch1.txt', '--output', args.output]
-
-    with open(args.od_list) as f:
-        for line in f:
-            sp = line.split()
-            cmd.append(str(int(sp[0])))
-            cmd.append(str(int(sp[1])))
-    print(cmd)
-
-    subprocess.run(cmd)

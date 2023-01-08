@@ -41,12 +41,13 @@ def true_data(args):
             print(display_cnt)
         if display_cnt >= limit:
             break
+    out = args.output
+    cPickle.dump(simData,open(os.path.join(out, './true_data/true_trajectories'), 'wb'))
 
-    cPickle.dump(simData,open('./true_data/true_trajectories', 'wb'))
 
-
-def completeTrajectories():
-    simTrjss = cPickle.load(open('./true_data/true_trajectories', 'rb'))
+def completeTrajectories(args):
+    out = args.output
+    simTrjss = cPickle.load(open(os.path.join(out, './true_data/true_trajectories'), 'rb'))
     simTrjComps = []
     for simTrjs in simTrjss:
         trjsCom = []
@@ -63,11 +64,13 @@ def completeTrajectories():
                 rec.append(math.atan2((simTrjs[i][2]-simTrjs[i-1][2]), (simTrjs[i][1]-simTrjs[i-1][1])))
             trjsCom.append(rec)
         simTrjComps.append(trjsCom)
-    cPickle.dump(simTrjComps,open('./true_data/true_trajectories_complete','wb'))
+    
+    cPickle.dump(simTrjComps,open(os.path.join(out, './true_data/true_trajectories_complete'),'wb'))
     return simTrjComps
 
-def computeFeas():
-    simTrjCompss = cPickle.load(open('./true_data/true_trajectories_complete', 'rb'))
+def computeFeas(args):
+    out = args.output
+    simTrjCompss = cPickle.load(open(os.path.join(out, './true_data/true_trajectories_complete'), 'rb'))
     simTrjFeas = []
     for simTrjComps in simTrjCompss:
         trjsComfea = []
@@ -89,7 +92,7 @@ def computeFeas():
                     rec.append(simTrjComps[i][3]-simTrjComps[i-1][3])
             trjsComfea.append(rec)
         simTrjFeas.append(trjsComfea)
-    cPickle.dump(simTrjFeas, open('./true_data/true_trajectories_feas', 'wb'))
+    cPickle.dump(simTrjFeas, open(os.path.join(out, './true_data/true_trajectories_feas'), 'wb'))
     return simTrjFeas
 
 def rolling_window(sample, windowsize = 12000, offset = 6000):
@@ -153,8 +156,9 @@ def behavior_ext(windows):
             behavior_sequence.append(behaviorFeature)
     return behavior_sequence
 
-def generate_behavior_sequences():
-    f = open('./true_data/true_trajectories_feas', 'rb')
+def generate_behavior_sequences(args):
+    out = args.output
+    f = open(os.path.join(out, './true_data/true_trajectories_feas'), 'rb')
     sim_data = cPickle.load(f)
     behavior_sequences = []
 
@@ -163,12 +167,13 @@ def generate_behavior_sequences():
         behavior_sequence = behavior_ext(windows)
         print(len(behavior_sequence))
         behavior_sequences.append(behavior_sequence)
-    fout = open('./true_data/true_behavior_sequences','wb')
+    fout = open(os.path.join(out, './true_data/true_behavior_sequences'),'wb')
     cPickle.dump(behavior_sequences,fout)
 
-def generate_normal_behavior_sequence():
+def generate_normal_behavior_sequence(args):
     global max_behaviour
-    f = open('./true_data/true_behavior_sequences', 'rb')
+    out = args.output
+    f = open(os.path.join(out, './true_data/true_behavior_sequences'), 'rb')
     behavior_sequences = cPickle.load(f)
 
     print(np.shape(behavior_sequences))
@@ -194,10 +199,10 @@ def generate_normal_behavior_sequence():
     print(index)
     print(np.shape(behavior_sequences_normal))
     print('max={}'.format(max_behaviour))
-    fout = open('./true_data/true_normal_behavior_sequences', 'wb')
+    fout = open(os.path.join(out, './true_data/true_normal_behavior_sequences'), 'wb')
     cPickle.dump(behavior_sequences_normal, fout)
 
-def trajectory2Vec():
+def trajectory2Vec(args):
     def loopf(prev, i):
         return prev
 
@@ -260,7 +265,8 @@ def trajectory2Vec():
     with tf.Session() as sess:
         sess.run(init)
         # Training cycle
-        input_datas = cPickle.load(open('./true_data/true_normal_behavior_sequences', 'rb'))
+        out = args.output
+        input_datas = cPickle.load(open(os.path.join(out, './true_data/true_normal_behavior_sequences'), 'rb'))
         trajectoryVecs = []
         j = 0
         for input_data in input_datas:
@@ -293,7 +299,8 @@ def trajectory2Vec():
             trajectoryVecs.append(embedding)
             print("Optimization Finished!")
             j = j + 1
-        fout = open('./true_data/true_traj_vec_normal_reverse', 'wb')
+        out = args.output
+        fout = open(os.path.join(out, './true_data/true_traj_vec_normal_reverse'), 'wb')
         cPickle.dump(trajectoryVecs, fout)
 
 
@@ -317,7 +324,8 @@ def split_time_series(ts):
 def vecClusterAnalysis(args):
     out_folder = args.output
     trVecs = []
-    trs = cPickle.load(open('./true_data/true_traj_vec_normal_reverse', 'rb'))
+    out = args.output
+    trs = cPickle.load(open(os.path.join(out, './true_data/true_traj_vec_normal_reverse'), 'rb'))
     inte = []
     for tr in trs:
         trVecs.append(tr[0][0])
@@ -325,7 +333,7 @@ def vecClusterAnalysis(args):
     print(1)
     km = KMeans(n_clusters=clsnum, random_state=2016)
     clusters = km.fit(trVecs).labels_.tolist()
-    simTrjss = cPickle.load(open('./true_data/true_trajectories', 'rb'))
+    simTrjss = cPickle.load(open(os.path.join(out, './true_data/true_trajectories'), 'rb'))
     time_list = []
     for tri in simTrjss:
         time_list.append(split_time_series(tri))
@@ -433,10 +441,8 @@ def vecClusterAnalysis(args):
 
 
 def check_args(args):
-    if not os.path.isdir('./true_data'):
-        os.makedirs('./true_data')
-    if not os.path.isdir(args.output):
-        os.makedirs(args.output)
+    if not os.path.isdir(os.path.join(args.output, './true_data')):
+        os.makedirs(os.path.join(args.output, './true_data'))
     return True
 
 
@@ -457,11 +463,11 @@ def main(args):
         return
 
     true_data(args)
-    completeTrajectories()
-    computeFeas()
-    generate_behavior_sequences()
-    generate_normal_behavior_sequence()
-    trajectory2Vec()
+    completeTrajectories(args)
+    computeFeas(args)
+    generate_behavior_sequences(args)
+    generate_normal_behavior_sequence(args)
+    trajectory2Vec(args)
     vecClusterAnalysis(args)
 
 
