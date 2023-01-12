@@ -12,7 +12,7 @@
     "batch_size": 32,
     "learning_rate": 0.01,
     "optimizer": "adam",
-    "epochs": 200,
+    "epochs": 100,
     "max_update_factor": 1,
     "ctx": 0,
     "adj_filename": "./train/data/small1/acc/acc.csv",
