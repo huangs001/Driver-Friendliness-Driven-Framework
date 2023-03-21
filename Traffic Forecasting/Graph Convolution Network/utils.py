@@ -27,6 +27,9 @@ def construct_model(config):
         if not os.path.exists(id_filename):
             id_filename = None
 
+    points_per_hour = points_per_hour / 3
+    num_for_predict = num_for_predict / 3
+
     adj = get_adjacency_matrix(adj_filename, num_of_vertices,
                                id_filename=id_filename)
     adj_mx = construct_adj(adj, time_step_filename, 4)

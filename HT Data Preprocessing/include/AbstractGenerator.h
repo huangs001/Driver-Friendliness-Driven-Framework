@@ -14,7 +14,7 @@ private:
 	std::string outputPath;
 	std::unordered_set<DataLine::IdType> enhanced;
 
-	const unsigned clusterTime = ConfigVal::clusterTime;
+	const unsigned clusterTime = ConfigVal::clusterTime / 3;
 public:
 	AbstractGenerator(const std::string& csvFolder, const std::string& osmidFolder, const std::unordered_set<DataLine::IdType> &enhanced, const std::string& outputPath);
 

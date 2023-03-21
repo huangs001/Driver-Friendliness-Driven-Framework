@@ -39,8 +39,11 @@ def run(args):
     true_values = []
 
     points_per_hour = config['points_per_hour']
+    num_for_predict = config['num_for_predict']
+    points_per_hour = points_per_hour / 3
+    num_for_predict = num_for_predict / 3
 
-    for idx, (x, y) in enumerate(generate_data(graph_signal_matrix_filename, points_per_hour, config['num_for_predict'])):
+    for idx, (x, y) in enumerate(generate_data(graph_signal_matrix_filename, points_per_hour, num_for_predict)):
         if args.test:
             x = x[: 100]
             y = y[: 100]
@@ -75,14 +78,16 @@ def run(args):
         context=ctx
     )
 
+    
+
     mod.bind(
         data_shapes=[(
             'data',
-            (batch_size, 4 * config['points_per_hour'], num_of_vertices, 1)
+            (batch_size, 4 * points_per_hour, num_of_vertices, 1)
         ), ],
         label_shapes=[(
             'label',
-            (batch_size, config['num_for_predict'], num_of_vertices)
+            (batch_size, num_for_predict, num_of_vertices)
         )]
     )
 
@@ -143,7 +148,7 @@ def run(args):
                 test_loader.reset()
                 prediction = mod.predict(test_loader)[1].asnumpy()
                 tmp_info = []
-                for idx in range(config['num_for_predict']):
+                for idx in range(num_for_predict):
                     y, x = test_y[:, : idx + 1, :], prediction[:, : idx + 1, :]
                     tmp_info.append((
                         masked_mae_np(y, x, 0),

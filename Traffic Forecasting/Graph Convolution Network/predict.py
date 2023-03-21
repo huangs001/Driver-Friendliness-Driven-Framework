@@ -24,9 +24,11 @@ def run(args):
         config = json.loads(f.read())
 
     num_of_vertices = config['num_of_vertices']
+
     graph_signal_matrix_filename = config['graph_signal_matrix_filename']
 
     point_per_hour = config['points_per_hour']
+    point_per_hour = point_per_hour / 3
 
     point_per_day = point_per_hour * 24
     point_per_week = point_per_day * 7
@@ -41,7 +43,7 @@ def run(args):
         for_training=False,
         data_shapes=[(
             'data',
-            (1, 4 * config['points_per_hour'], num_of_vertices, 1)
+            (1, 4 * point_per_hour, num_of_vertices, 1)
         ), ]
     )
 

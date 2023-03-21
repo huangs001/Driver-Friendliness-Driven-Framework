@@ -8,7 +8,7 @@ public:
 	std::string osmid_folder = R"(./output_osmid)";
 	std::string osmDataPath = R"(./result.txt)";
 
-	inline static const unsigned clusterTime = 60 * 15;
+	inline static const unsigned clusterTime = 60 * 5;
 	std::string bigFlowOutput = "./output/big/flow/data";
 	std::string bigPtOutput = "./output/big/passtime/data";
 	std::string bigAccOutput = "./output/big/acc/data";
