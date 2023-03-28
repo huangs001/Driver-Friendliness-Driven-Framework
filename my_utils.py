@@ -284,7 +284,7 @@ def convert_i(input1, input2, output, i):
 
 
 def step1(match_folder, traj, osm, road_path, outpath):
-    shutil.rmtree(match_folder)
+    shutil.rmtree(match_folder, ignore_errors=True)
     os.makedirs(match_folder, exist_ok=True)
     gps_matching(traj, osm, match_folder)
 
@@ -293,7 +293,7 @@ def step1(match_folder, traj, osm, road_path, outpath):
     road_length = {}
     traj_osmid = os.path.join(outpath, './traj_osmid')
 
-    shutil.rmtree(traj_osmid)
+    shutil.rmtree(traj_osmid, ignore_errors=True)
     os.makedirs(traj_osmid, exist_ok=True)
     for file in file_list:
         with open(os.path.join(match_folder, file)) as f, open(os.path.join(traj_osmid, f'{file}'), 'w') as f2:
