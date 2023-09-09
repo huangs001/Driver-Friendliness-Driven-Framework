@@ -6,7 +6,7 @@ import argparse
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--traj", type=str, required=True, help='trajectory data')
+    parser.add_argument("--traj_data", type=str, required=True, help='trajectory data')
     #parser.add_argument("--match", type=str, required=True, help="trajectory matching")
     parser.add_argument("--osm", type=str, required=True, help="openstreetmap data")
     
