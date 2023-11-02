@@ -1,5 +1,5 @@
-# L2PN<font size=4>AV</font>
-A Learning-to-Planning Framework for Enhancing Driver Friendliness in Graph Neural Network-Based Navigation Systems
+# UFN
+User friendly navigation framework based on systematic utilization of the user friendliness features from historical traffic data
 
 # 1. Requirements
 C++ 17 or higher
